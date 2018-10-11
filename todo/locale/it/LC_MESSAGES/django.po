@@ -1,0 +1,82 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-10-11 16:55+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+#: .\views.py:55
+msgid ""
+"You do not yet belong to any groups. Ask your administrator to add you to "
+"one."
+msgstr "Non appartieni a nessun gruppo. Contatta l'amministratore."
+
+#: .\views.py:97
+msgid "{list_name} is gone."
+msgstr "La lista \"{list_name}\" è stata eliminata correttamente."
+
+#: .\views.py:160
+msgid "New task \"{t}\" has been added."
+msgstr "Promemoria \"{t}\" creato correttamente."
+
+#: .\views.py:208
+msgid "Comment posted. Notification email sent to thread participants."
+msgstr "Il commento è stato pubblicato. Una mail è stata spedita agli utenti interessati."
+
+#: .\views.py:216
+msgid "The task has been edited."
+msgstr "Modifica salvata correttamente."
+
+#: .\views.py:280
+msgid "A new list has been added."
+msgstr "Lista creata correttamente."
+
+#: .\views.py:286
+msgid ""
+"There was a problem saving the new list. Most likely a list with the same "
+"name in the same group already exists."
+msgstr ""
+"Si è verificato un problema nel salvataggio della nuova lista. Controllare "
+"che non esistano omonimi nello stesso gruppo."
+
+#: .\views.py:349
+msgid ""
+"This feature requires TODO_DEFAULT_LIST_SLUG: in settings. See documentation."
+msgstr ""
+"Questa funzionalità richiede TODO_DEFAULT_LIST_SLUG nelle impostazioni; vedi la documentazione."
+
+#: .\views.py:352
+msgid ""
+"There is no TaskList with slug specified for TODO_DEFAULT_LIST_SLUG in "
+"settings."
+msgstr ""
+"Non è stata impostata alcuna lista in TODO_DEFAULT_LIST_SLUG nelle impostazioni."
+
+#: .\views.py:375
+msgid "Task saved but mail not sent. Contact your administrator."
+msgstr ""
+"Il promemoria è stato salvato, ma c'è stato un problema nella spedizione della mail. "
+"Contatta l'amministratore di sistema."
+
+#: .\views.py:377
+msgid "Your trouble ticket has been submitted. We'll get back to you soon."
+msgstr "La segnalazione è stata salvata correttamente."
+
+#: .\views.py:410
+msgid "Task status changed for '{}'"
+msgstr "Lo stato del promemoria \"{}\" è stato cambiato correttamente."
+
+#: .\views.py:434
+msgid "Task '{}' has been deleted"
+msgstr "Il promemoria \"{}\" è stato eliminato correttamente."
