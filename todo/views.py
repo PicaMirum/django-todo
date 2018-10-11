@@ -15,6 +15,7 @@ from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
 from todo.forms import AddTaskListForm, AddEditTaskForm, AddExternalTaskForm, SearchForm
@@ -51,7 +52,7 @@ def list_lists(request) -> HttpResponse:
 
     # Make sure user belongs to at least one group.
     if request.user.groups.all().count() == 0:
-        messages.warning(request, "You do not yet belong to any groups. Ask your administrator to add you to one.")
+        messages.warning(request, _("You do not yet belong to any groups. Ask your administrator to add you to one."))
 
     # Superusers see all lists
     if request.user.is_superuser:
@@ -93,7 +94,7 @@ def del_list(request, list_id: int, list_slug: str) -> HttpResponse:
 
     if request.method == 'POST':
         TaskList.objects.get(id=task_list.id).delete()
-        messages.success(request, "{list_name} is gone.".format(list_name=task_list.name))
+        messages.success(request, _("{list_name} is gone.").format(list_name=task_list.name))
         return redirect('todo:lists')
     else:
         task_count_done = Task.objects.filter(task_list=task_list.id, completed=True).count()
@@ -156,7 +157,7 @@ def list_detail(request, list_id=None, list_slug=None, view_completed=False):
             if "notify" in request.POST and new_task.assigned_to and new_task.assigned_to != request.user:
                 send_notify_mail(new_task)
 
-            messages.success(request, "New task \"{t}\" has been added.".format(t=new_task.title))
+            messages.success(request, _("New task \"{t}\" has been added.").format(t=new_task.title))
             return redirect(request.path)
     else:
         # Don't allow adding new tasks on some views
@@ -200,10 +201,11 @@ def task_detail(request, task_id: int) -> HttpResponse:
             body=request.POST['comment-body'],
         )
 
+        email_subject = render_to_string("todo/email/newcomment_subject.txt", {'task': task.title})
         send_email_to_thread_participants(
             task, request.POST['comment-body'], request.user,
-            subject='New comment posted on task "{}"'.format(task.title))
-        messages.success(request, "Comment posted. Notification email sent to thread participants.")
+            subject=email_subject)
+        messages.success(request, _("Comment posted. Notification email sent to thread participants."))
 
     # Save task edits
     if request.POST.get('add_edit_task'):
@@ -211,7 +213,7 @@ def task_detail(request, task_id: int) -> HttpResponse:
 
         if form.is_valid():
             form.save()
-            messages.success(request, "The task has been edited.")
+            messages.success(request, _("The task has been edited."))
             return redirect('todo:list_detail', list_id=task.task_list.id, list_slug=task.task_list.slug)
     else:
         form = AddEditTaskForm(request.user, instance=task, initial={'task_list': task.task_list})
@@ -275,14 +277,14 @@ def add_list(request) -> HttpResponse:
                 newlist = form.save(commit=False)
                 newlist.slug = slugify(newlist.name)
                 newlist.save()
-                messages.success(request, "A new list has been added.")
+                messages.success(request, _("A new list has been added."))
                 return redirect('todo:lists')
 
             except IntegrityError:
                 messages.warning(
                     request,
-                    "There was a problem saving the new list. "
-                    "Most likely a list with the same name in the same group already exists.")
+                    _("There was a problem saving the new list. "
+                    "Most likely a list with the same name in the same group already exists."))
     else:
         if request.user.groups.all().count() == 1:
             form = AddTaskListForm(request.user, initial={"group": request.user.groups.all()[0]})
@@ -344,10 +346,10 @@ def external_add(request) -> HttpResponse:
     """
 
     if not settings.TODO_DEFAULT_LIST_SLUG:
-        raise RuntimeError("This feature requires TODO_DEFAULT_LIST_SLUG: in settings. See documentation.")
+        raise RuntimeError(_("This feature requires TODO_DEFAULT_LIST_SLUG: in settings. See documentation."))
 
     if not TaskList.objects.filter(slug=settings.TODO_DEFAULT_LIST_SLUG).exists():
-        raise RuntimeError("There is no TaskList with slug specified for TODO_DEFAULT_LIST_SLUG in settings.")
+        raise RuntimeError(_("There is no TaskList with slug specified for TODO_DEFAULT_LIST_SLUG in settings."))
 
     if request.POST:
         form = AddExternalTaskForm(request.POST)
@@ -370,9 +372,9 @@ def external_add(request) -> HttpResponse:
                         email_subject, email_body, task.created_by.email,
                         [task.assigned_to.email, ], fail_silently=False)
                 except ConnectionRefusedError:
-                    messages.warning(request, "Task saved but mail not sent. Contact your administrator.")
+                    messages.warning(request, _("Task saved but mail not sent. Contact your administrator."))
 
-            messages.success(request, "Your trouble ticket has been submitted. We'll get back to you soon.")
+            messages.success(request, _("Your trouble ticket has been submitted. We'll get back to you soon."))
             return redirect(settings.TODO_PUBLIC_SUBMIT_REDIRECT)
 
     else:
@@ -405,7 +407,7 @@ def toggle_done(request, task_id: int) -> HttpResponse:
     task.completed = not task.completed
     task.save()
 
-    messages.success(request, "Task status changed for '{}'".format(task.title))
+    messages.success(request, _("Task status changed for '{}'").format(task.title))
     return redirect(reverse('todo:list_detail', kwargs={"list_id": tlist.id, "list_slug": tlist.slug}))
 
 
@@ -429,5 +431,5 @@ def delete_task(request, task_id: int) -> HttpResponse:
     tlist = task.task_list
     task.delete()
 
-    messages.success(request, "Task '{}' has been deleted".format(task.title))
+    messages.success(request, _("Task '{}' has been deleted").format(task.title))
     return redirect(reverse('todo:list_detail', kwargs={"list_id": tlist.id, "list_slug": tlist.slug}))
